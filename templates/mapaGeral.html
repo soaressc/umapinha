@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/andares.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fontes.css') }}" />
+  <title>Página 2</title>
+</head>
+
+<body>
+  <section class="inicio-container">
+    <section class="header-usuario">
+      <section class="vidas">
+        <img class="vidaImg" src="../static//imagens/coracao.png" />
+        <img class="vidaImg" src="../static//imagens/coracao.png" />
+        <img class="vidaImg" src="../static//imagens/coracao.png" />
+      </section>
+      <section class="icon-user-container">
+        <img class="icon-user" src="../static//imagens/iconUser.png" onclick="toggleMenu()" />
+        <div class="menu-perfil" id="menu-perfil">
+          <div class="close-align">
+            <span class="close-menu" onclick="toggleMenu()">X</span>
+          </div>
+          <a href="/">Inicio</a>
+          <a href="/perfil">Perfil</a>
+          <a href="/sair">Sair</a>
+        </div>
+      </section>
+      <section class="perfil">
+      </section>
+    </section>
+    <section class="image-container">
+      <img class="img-if-inicio" src="../static//imagens/inicioIf.png" />
+      <a class="botao-andar1" href="/andar5"><img src="../static/imagens/localizacao.png" /></a>
+      <a class="botao-andar2" href="/andar4"><img src="../static/imagens/localizacao.png" /></a>
+      <a class="botao-andar3" href="/andar3"><img src="../static/imagens/localizacao.png" /></a>
+    </section>
+    <section class="selecionar-andar">
+      <h2 class="selecione-andar-texto">Selecione um andar</h2>
+    </section>
+  </section>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('menu-perfil');
+      menu.classList.toggle('show');
+    }
+
+    // Fecha o menu
+    window.onclick = function (event) {
+      if (!event.target.matches('.icon-user')) {
+        const menu = document.getElementById('menu-perfil');
+        if (menu.classList.contains('show')) {
+          menu.classList.remove('show');
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

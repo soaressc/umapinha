@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status do Jogo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/status_jogo.css') }}">
+</head>
+
+<body class="container">
+    <section>
+        {% if jogos_concluidos and vidas is not none and vidas > 0 %}
+        <section class="centralizar">
+            <img src="../static/imagens/trofeu.png" />
+            <h1 class="parabens">Parabéns!</h1>
+            <p class="mensagem-venceu">Você completou<br> o mapa!</p>
+            <section class="inicio">
+                <a href="{{ url_for('index') }}">Início</a>
+            </section>
+        </section>
+        {% else %}
+
+        <section class="centralizar">
+            <img src="{{ imagem }}" alt="Status do Jogo" style="max-width: 100%; height: auto;">
+            <p class="parabens">{{ mensagem }}</p>
+            <p class="mensagem-venceu">{{ mensagem2 }}</p>
+            <p class="mensagem-venceu">Vidas restantes: {{ vidas }}</p>
+        
+
+            <section class="inicio">
+                <a href="{{ url_for('reiniciar_jogo') }}">Reiniciar</a>
+            </section>
+        </section>
+        {% endif %}
+    </section>
+   
+</body>
+
+</html>

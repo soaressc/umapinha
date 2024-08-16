@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+    rel="stylesheet"
+    type="text/css"
+    href="{{ url_for('static', filename='css/reset.css') }}"
+  />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/andares.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/fontes.css') }}"
+    />
+    <title>Andar 4</title>
+  </head>
+  <body>
+    <section class="inicio-container">
+      <section class="header-usuario">
+        <section class="vidas">
+          <img class="vidaImg" src="../static//imagens/coracao.png" />
+          <img class="vidaImg" src="../static//imagens/coracao.png" />
+          <img class="vidaImg" src="../static//imagens/coracao.png" />
+        </section>
+        <section class="icon-user-container">
+          <img class="icon-user" src="../static//imagens/iconUser.png" onclick="toggleMenu()" />
+          <div class="menu-perfil" id="menu-perfil">
+            <div class="close-align">
+              <span class="close-menu" onclick="toggleMenu()">X</span>
+            </div>
+            <a href="/">Inicio</a>
+            <a href="/perfil">Perfil</a>
+            <a href="/sair">Sair</a>
+          </div>
+        </section>
+      <section class="image-container-quarto-andar-pergunta">
+        <img class="quarto-andar-img3-pergunta" src="../static//imagens/quarto-andar//quarto-andar-img3.JPG" />
+       
+        <a href="/mapaGeral">
+          <img class="voltar" src="../static/imagens/seta_esquerda.png" />
+        </a>
+      </section>
+    </section>
+    <script>
+      function toggleMenu() {
+        const menu = document.getElementById('menu-perfil');
+        menu.classList.toggle('show');
+      }
+  
+      // Close the menu if the user clicks outside of it
+      window.onclick = function (event) {
+        if (!event.target.matches('.icon-user')) {
+          const menu = document.getElementById('menu-perfil');
+          if (menu.classList.contains('show')) {
+            menu.classList.remove('show');
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

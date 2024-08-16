@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questão {{ questao.id_questao }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/questoes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/andares.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Squada+One&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <section class="header-usuario">
+            <section class="vidas" id="vidas">
+                {% for i in range(questao.jogo.vidas) %}
+                <img src="{{ url_for('static', filename='imagens/coracao.png') }}" alt="Heart" class="vida">
+                {% endfor %}
+            </section>
+            <section class="icon-user-container-questoes">
+                <img class="icon-user" src="{{ url_for('static', filename='imagens/iconUser.png') }}" onclick="toggleMenu()" />
+                <div class="menu-perfil" id="menu-perfil">
+                    <div class="close-align">
+                        <span class="close-menu" onclick="toggleMenu()">X</span>
+                    </div>
+                    <a href="/">Inicio</a>
+                    <a href="/perfil">Perfil</a>
+                    <a href="/sair">Sair</a>
+                </div>
+            </section>
+        </section>
+
+        <h1 id="pergunta">{{ questao.texto_pergunta }}</h1>
+        <div class="opcoes">
+            {% for alt in alternativas %}
+            <button class="opcao" id="opcao_{{ loop.index }}" onclick="selecionarOpcao('{{ alt.texto_alternativa }}')">
+                {{ alt.texto_alternativa }}
+            </button>
+            {% endfor %}
+        </div>
+        <p class="resultado" id="resultado"></p>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menu-perfil');
+            menu.classList.toggle('show');
+        }
+
+        // Fecha o menu
+        window.onclick = function (event) {
+            if (!event.target.matches('.icon-user')) {
+                const menu = document.getElementById('menu-perfil');
+                if (menu.classList.contains('show')) {
+                    menu.classList.remove('show');
+                }
+            }
+        }
+
+        let opcaoSelecionada = null;
+        const textoRespostaCorreta = '{{ texto_alternativa }}'.trim();
+
+        function selecionarOpcao(opcao) {
+            if (opcaoSelecionada) return;
+
+            opcaoSelecionada = opcao;
+            const botaoSelecionado = document.querySelector(`button[onclick="selecionarOpcao('${opcao}')"]`);
+            enviarResposta(botaoSelecionado);
+        }
+
+        async function enviarResposta(botaoSelecionado) {
+            const resultado = document.getElementById('resultado');
+
+            try {
+                const respostaDados = {
+                    resposta: opcaoSelecionada.trim(),
+                    texto_resposta_correta: textoRespostaCorreta
+                };
+
+                console.log("Dados sendo enviados:", respostaDados);  // Verifique os dados
+
+                const resposta = await fetch('/check_answer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(respostaDados)
+                });
+
+                if (!resposta.ok) {
+                    throw new Error(`Erro na resposta: ${resposta.status}`);
+                }
+
+                const dados = await resposta.json();
+                console.log("Dados recebidos:", dados);
+
+                resultado.textContent = dados.resultado;
+
+                // Adiciona a classe de resposta correta ou incorreta
+                if (opcaoSelecionada === textoRespostaCorreta) {
+                    botaoSelecionado.classList.add('opcao-correta');
+                } else {
+                    botaoSelecionado.classList.add('opcao-incorreta');
+                }
+
+                if (dados.redirecionar) {
+                    window.location.href = '/status_jogo/' + '{{ questao.id_usuario }}';
+                } else if (dados.jogo_acabado) {
+                    window.location.href = '/fim_jogo';
+                }
+
+            } catch (error) {
+                console.error('Erro ao enviar resposta:', error);
+                resultado.textContent = 'Ocorreu um erro. Tente novamente.';
+            }
+        }
+    </script>
+</body>
+
+</html>

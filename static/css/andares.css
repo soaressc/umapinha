@@ -1,0 +1,250 @@
+body {
+    background-color: #093824;
+}
+
+.inicio-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.header-usuario {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-right: 25px;
+    margin-top: 2%;
+}
+
+.vidas {
+    margin-top: 2%;
+    margin-right: 10px;
+}
+
+.vidaImg {
+    width: 55px;
+}
+
+.icon-user-container {
+    position: relative;
+}
+
+.menu-perfil {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #E5B769;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    width: 180px;
+    border-radius: 5px;
+    font-family: "Stalinist One", sans-serif;
+    font-size: 12px;
+}
+
+.menu-perfil a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.menu-perfil a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Mostrar o menu quando a classe 'show' é adicionada */
+.menu-perfil.show {
+    display: block;
+}
+
+.close-align{
+    display: flex;
+    justify-content: flex-end; 
+    padding: 2px 10px; 
+}
+
+.close-menu{
+    font-size: 16px;
+    cursor: pointer;
+}
+.icon-user {}
+
+.perfil {}
+
+.image-container {
+    position: relative;
+    width: 400px;
+    margin: 0 auto;
+}
+.image-container-andar-3 {
+    position: relative;
+    width: 350px;
+    margin: 0 auto;
+}
+
+.img-if-inicio {
+    width: 100%; 
+    display: block;
+}
+.img-if-escadas {
+    width: 100%; 
+    display: block;
+}
+
+.voltar {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 20px; 
+    left: 20px; 
+}
+
+.botao-andar1 {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.botao-andar2 {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.botao-andar3 {
+    position: absolute;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    width: 50px;
+}
+
+.selecionar-andar {
+    background-color: #000;
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    display: block;
+    margin-top: 2%;
+    /* margin: 0 auto; */
+}
+
+.selecione-andar-texto {
+    color: #fff;
+    font-family: "Stalinist One", sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+}
+.selecione-andar-texto-2 {
+    color: #fff;
+    font-family: "Stalinist One", sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    margin-top: 20px;
+}
+
+/* SEGUNDO ANDAR*/
+.image-container-segundo-andar {
+    position: relative;
+    width: 330px;
+    margin: 0 auto;
+}
+
+.segundo-andar-img1{
+    width: 100%;
+    height: 30rem;
+    display: block;
+}
+
+.ir-andar-1{
+    position: absolute;
+    top: 90%;
+    left: 85%;
+    transform: translate(-50%, -50%);
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+}
+
+/* QUARTO ANDAR */
+.image-container-quarto-andar {
+    position: relative;
+    width: 400px;
+    margin: 0 auto;
+}
+
+.quarto-andar-img1{
+    width: 100%;
+    height: 30rem;
+    display: block;
+}
+
+.proseguir-4-andar{
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 20px; 
+    left: 20px; 
+}
+
+.seta-sobre-img1{
+    position: absolute;
+    top: 75%;
+    left: 40%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    /* pointer-events: none; */
+}
+.seta-sobre-img2{
+    position: absolute;
+    top: 58%;
+    left: 88%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    /* pointer-events: none; */
+}
+
+/*QUARTO ANDAR PERGUNTA*/
+.image-container-quarto-andar-pergunta {
+    position: relative;
+    width: 400px;
+    margin: 0 auto;
+}
+
+.quarto-andar-img3-pergunta{
+    width: 100%;
+    height: 30rem;
+    display: block;
+}
+
+/*TELA FINAL ANTES DA PERGUNTA*/
+.selecionar{
+    position: absolute;
+    top: 58%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    /* pointer-events: none; */
+}

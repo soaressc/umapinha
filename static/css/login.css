@@ -1,0 +1,135 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #E5B769;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+.login-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.logo {
+    width: 80px;
+    margin-bottom: 5px;
+}
+
+h2 {
+    font-family: 'Squada One', sans-serif;
+    font-size: 4rem;
+    color: #291711;
+    margin-bottom: 20px;
+}
+
+.input-area {
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+h3 {
+    font-family: 'Squada One', sans-serif;
+    font-size: 2rem;
+    color: #291711;
+}
+
+.warning {
+    font-size: 1rem;
+    text-align: end;
+    color: #C84630;
+    display: none; /* Escondido por default */
+    padding-right: 5%;
+}
+
+input {
+    width: calc(100% - 10px);
+    padding: 10px;
+    background-color: #E5EAFA;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    color: #291711;
+    margin-top: 5px;
+}
+
+input.error {
+    background-image: url('../imagens/close.png');
+    background-size: 20px;
+    background-position: right 5% bottom 45%;
+    background-repeat: no-repeat;
+    border-color: #C84630;
+}
+
+input.success {
+    background-image: url('../imagens/checkmark.png');
+    background-size: 20px;
+    background-position: right 5% bottom 45%;
+    background-repeat: no-repeat;
+    border-color: #4CAF50;
+}
+
+.login-button {
+    font-family: 'Squada One', sans-serif;
+    width: 60%;
+    margin: 8px 0 25px 0;
+    padding: 15px;
+    font-size: 1.8rem;
+    border-radius: 28px;
+    border: none;
+    color: #fff;
+    background-color: #C84630;
+    box-shadow: 0 12px 16px rgba(0,0,0,0.12), 0 10px 20px rgba(0,0,0,0.12);
+    cursor: pointer;
+}
+
+.login-button:hover {
+    box-shadow: inset rgb(41, 23, 17, 0.25) 0px 0px 60px -4px; 
+}
+
+.signup-login {
+    font-family: 'Squada One', sans-serif;
+    font-size: 1.6rem;
+    color: white;
+    font-size: 50px;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #291711;
+    margin-top: 0px;
+    cursor: pointer;
+}
+
+.signup-login:hover {
+    text-decoration: none;
+    color: #E5B769;
+}
+
+.toggle-password {
+    font-family: "Press Start 2P", system-ui;
+    font-size: 10px;
+    color: grey;
+    border: none;
+    background-color: none;
+    margin-top: 2px;
+    cursor: pointer;
+}
+
+.under-password-sec {
+    display: flex;
+    justify-content: space-between;
+}

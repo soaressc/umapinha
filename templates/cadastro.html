@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/reset.css') }}"/>
+        <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/cadastro.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fontes.css') }}"/>
+        <title>Cadastro</title>
+        </head>
+    <body>
+        <div class="cadastro-container">
+            <img src="../static/imagens/novo-jogador.png" alt="Logo" class="logo">
+            <h2>CADASTRO</h2>
+            <section class="input-area">
+                <form method="POST" action="{{ url_for('cadastro') }}" id="cadastro-form">
+                    <div class="input-group">
+                        <h3>nome</h3>
+                        <input type="text" name="name" id="name">
+                        <h3 class="warning" id="name-warning">nome inválido</h3>
+                    </div>
+                    <div class="input-group">
+                        <h3>email</h3>
+                        <input type="email" name="email" id="email">
+                        <h3 class="warning" id="email-warning">email inválido</h3>
+                    </div>
+                    <div class="input-group">
+                        <h3>senha</h3>
+                        <span class="spec-text">mínimo de 6 caracteres</span>
+                        <input type="password" name="password" id="password">
+                        <section class="under-password-sec">
+                            <span class="toggle-password">ver senha</span>
+                            <h3 class="warning" id="password-warning">senha inválida</h3>
+                        </section>
+                    </div>
+                    <div class="input-group">
+                        <h3>confirmar senha</h3>
+                        <input type="password" name="confirm-password" id="confirm-password">
+                        <section class="under-password-sec">
+                            <span class="toggle-password">ver senha</span>
+                            <h3 class="warning" id="confirm-password-warning">confirmação inválida</h3>   
+                        </section>
+                        </div>
+                    <button class="cadastro-button" type="submit">CADASTRAR</button>
+                </form>
+            </section>
+            <h3>Já tem conta? <a class="signup-login" href="{{ url_for('login') }}">ENTRAR</a></h3>
+        </div>
+
+        <!-- Modal de Confirmação -->
+        <div id="confirmation-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Cadastro realizado com sucesso!</h2>
+                <p>Seu cadastro foi concluído. Você já pode fazer login.</p>
+        </div>
+        </div>
+    </body>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        // Instancia elementos do HTML
+        const cadastroButton = document.querySelector('.cadastro-button');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const nameWarning = document.getElementById('name-warning');
+        const emailWarning = document.getElementById('email-warning');
+        const passwordWarning = document.getElementById('password-warning');
+        const confirmPasswordWarning = document.getElementById('confirm-password-warning');
+        const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+        const modal = document.getElementById('confirmation-modal');
+        const closeButton = document.querySelector('.close-button');
+
+        // Garante que o modal de confirmação de cadastro não apareça no carregamento da tela
+        modal.style.display = 'none';
+
+        // Lógica para clique no botão de cadastro
+        cadastroButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            let isValid = true;
+
+            // Reset de estilo dos inputs
+            resetInputStyles(nameInput, nameWarning);
+            resetInputStyles(emailInput, emailWarning);
+            resetInputStyles(passwordInput, passwordWarning);
+            resetInputStyles(confirmPasswordInput, confirmPasswordWarning);
+
+            // Apresenta warning se não entrar com nome
+            if (nameInput.value.trim() === '') {
+                setInputError(nameInput, nameWarning, 'informe seu nome');
+                isValid = false;
+            } else {
+                setInputSuccess(nameInput);
+            }
+
+            // Apresenta warning se o e-mail não obedecar ao regex
+            if (!validateEmail(emailInput.value)) {
+                setInputError(emailInput, emailWarning, 'email inválido');
+                isValid = false;
+            } else {
+                setInputSuccess(emailInput);
+            }
+
+            // Apresenta warning se a senha tem menos de 6 caracteres
+            if (passwordInput.value.length < 6) {
+                setInputError(passwordInput, passwordWarning, 'senha inválida');
+                isValid = false;
+            } else {
+                setInputSuccess(passwordInput);
+            }
+
+            // Apresenta warning se a senha não coincidir com a confirmação
+            if (confirmPasswordInput.value !== passwordInput.value || confirmPasswordInput.value === '') {
+                setInputError(confirmPasswordInput, confirmPasswordWarning, 'confirmação inválida');
+                isValid = false;
+            } else {
+                setInputSuccess(confirmPasswordInput);
+            }
+
+            // Se não houver nenhum warning cria um objeto com os valores
+            if (isValid) {
+                const formData = new FormData(document.querySelector('form'));
+        
+                // Envia a requisição para a rota de cadastro com as informações de cadastro no corpo
+                fetch('/cadastro', {
+                    method: 'POST',
+                    body: formData
+                })
+                // Recebe a resposta do endpoint
+                .then(response => response.json())
+                // Mostra modal ou mostra erros
+                .then(data => {
+                    if (data.success) {
+                        showConfirmationModal();
+                    } else {
+                        flashErrorMessages(data.errors);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                });
+            // Se houver erro, mantém os dados nos input para nova tentativa de cadastro
+            } else {
+                saveInputValues();
+            }
+        });
+
+        // Apresenta ou oculta a senha
+        togglePasswordButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.closest('.input-group').querySelector('input');
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.textContent = type === 'password' ? 'ver senha' : 'ocultar';
+            });
+        });
+
+        // Fecha o modal setando display como none, tal como o início da tela
+        closeButton.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Regex de email
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Apresenta estilos e mensagens de erro
+        function setInputError(input, warningElement, message) {
+            input.classList.add('error');
+            input.classList.remove('success');
+            warningElement.textContent = message;
+            warningElement.style.display = 'block';
+        }
+
+        // Apresenta estilos de sucesso
+        function setInputSuccess(input) {
+            input.classList.add('success');
+            input.classList.remove('error');
+        }
+
+        // Reseta estilos
+        function resetInputStyles(input, warningElement) {
+            input.classList.remove('error', 'success');
+            warningElement.style.display = 'none';
+        }
+
+        // Mostra Modal de confirmação e limpa os campos do armazenamento local (usado para nova tentativa de cadastro)
+        function showConfirmationModal() {
+            modal.style.display = 'flex';
+            localStorage.removeItem('name');
+            localStorage.removeItem('email');
+            localStorage.removeItem('password');
+            localStorage.removeItem('confirm-password');
+        }
+
+        // Salva os valores dos inputs para nova tentativa de cadastro em caso de erro
+        function saveInputValues() {
+            localStorage.setItem('name', nameInput.value);
+            localStorage.setItem('email', emailInput.value);
+            localStorage.setItem('password', passwordInput.value);
+            localStorage.setItem('confirm-password', confirmPasswordInput.value);
+        }
+
+        // Exibir mensagens de erro retornadas pelo backend
+        function flashErrorMessages(errors) {
+            if (errors.name) {
+                setInputError(nameInput, nameWarning, errors.name);
+            }
+            if (errors.email) {
+                setInputError(emailInput, emailWarning, errors.email);
+            }
+            if (errors.password) {
+                setInputError(passwordInput, passwordWarning, errors.password);
+            }
+            if (errors.confirm_password) {
+                setInputError(confirmPasswordInput, confirmPasswordWarning, errors.confirm_password);
+            }
+        }
+    });
+
+    </script>
+</html>

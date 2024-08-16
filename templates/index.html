@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/css/index.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fontes.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/reset.css') }}" />
+  <title>Página Inicial</title>
+</head>
+
+<body class="container-pagina-inicial">
+  <section class="container-conteudo-pagina-inicial">
+    <img src="{{ url_for('static', filename='imagens/logo-umapinha.png')}}" />
+    <h1 class="titulo-umapinha">Umapinha</h1>
+    <a href="/mapaGeral">
+      <section class="botao-iniciar">
+        <p class="iniciar-titulo">Iniciar</p>
+      </section>
+    </a>
+  </section>
+</body>
+
+</html>

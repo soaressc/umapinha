@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/reset.css') }}"/>
+        <link rel="stylesheet" href="{{ url_for('static', filename='../static/css/login.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fontes.css') }}"/>
+        <title>Login</title>
+    </head>
+    <body>
+        <div class="login-container">
+            <img src="{{ url_for('static', filename='../static/imagens/cone.png') }}" alt="Logo" class="logo">
+            <h2>LOGIN</h2>
+            <section class="input-area">
+                <form method="POST">
+                    <div class="input-group">
+                        <h3>Email</h3>
+                        <input type="email" name="email" id="username" required>
+                        <h3 class="warning" id="username-warning">Email inválido</h3>
+                    </div>
+                    <div class="input-group">
+                        <h3>Senha</h3>
+                        <input type="password" name="password" id="password" required>
+                        <section class="under-password-sec">
+                            <span class="toggle-password">ver senha</span>
+                            <h3 class="warning" id="password-warning">Senha inválida</h3>   
+                        </section>
+                    </div>
+                    <button class="login-button" type="submit">ENTRAR</button>
+                </form>
+            </section>
+            <h3>Ainda não é cadastrado?</h3>
+            <a class="signup-login" href="{{ url_for('cadastro') }}">CRIAR CONTA</a>
+        </div>
+    </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const loginButton = document.querySelector('.login-button');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const usernameWarning = document.getElementById('username-warning');
+        const passwordWarning = document.getElementById('password-warning');
+        const togglePasswordButton = document.querySelector('.toggle-password');
+
+        // Carrega valores do input
+        loadInputValues();
+
+        // Botão de login
+        loginButton.addEventListener('click', function(event) {
+            event.preventDefault(); // Previne submissão do formulário
+            let isValid = true;
+        
+            // Reseta styles e warnings anteriores
+            resetInputStyles(usernameInput, usernameWarning);
+            resetInputStyles(passwordInput, passwordWarning);
+        
+            // Valida usuário (email)
+            if (!validateEmail(usernameInput.value)) {
+                setInputError(usernameInput, usernameWarning, 'email inválido');
+                isValid = false;
+            } else {
+                setInputSuccess(usernameInput);
+            }
+        
+            // Valida senha
+            if (passwordInput.value.length < 6) { // Senha deve ter ao menos 6 caracteres
+                setInputError(passwordInput, passwordWarning, 'senha inválida');
+                isValid = false;
+            } else {
+                setInputSuccess(passwordInput);
+            }
+        
+            if (isValid) {
+                // Primeira requisição para verificar se o e-mail existe
+                fetch('/verificar-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: usernameInput.value })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        // Se o e-mail existir, prosseguir com a validação do login
+                        const formData = new FormData();
+                        formData.append('email', usernameInput.value);
+                        formData.append('password', passwordInput.value);
+                
+                        return fetch('/login', {
+                            method: 'POST',
+                            body: formData
+                        });
+                    } else {
+                        // Se o e-mail não existir, exibir mensagem de erro
+                        setInputError(usernameInput, usernameWarning, 'e-mail não cadastrado');
+                        throw new Error('e-mail não cadastrado');
+                    }
+                })
+                // Recebe resposta da requisição
+                .then(response => response.json())
+                .then(data => {
+                    // Se sucesso, redireciona para mapa geral
+                    if (data.success) {
+                        alert('Redirecionando...');
+                        localStorage.removeItem('username');
+                        localStorage.removeItem('password');
+                        window.location.href = '/'; // Redirecionar para o index
+                    // Se a senha não coincidir, apresenta warning
+                    } else {
+                        setInputError(passwordInput, passwordWarning, 'senha inválida');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            } else {
+                // Salva os dados inválidos dos inputs quando ocorre erro de login
+                saveInputValues();
+            }
+        });
+
+        // Apresenta e oculta a senha
+        togglePasswordButton.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            togglePasswordButton.textContent = type === 'password' ? 'ver senha' : 'ocultar';
+        });
+
+        // Regex de email
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Métodos auxiliares dos inputs, tal quais os do cadastro
+        function setInputError(input, warningElement, message) {
+            input.classList.add('error');
+            input.classList.remove('success');
+            warningElement.textContent = message;
+            warningElement.style.display = 'block';
+        }
+
+        function setInputSuccess(input) {
+            input.classList.add('success');
+            input.classList.remove('error');
+        }
+
+        function resetInputStyles(input, warningElement) {
+            input.classList.remove('error', 'success');
+            warningElement.style.display = 'none';
+        }
+
+        function saveInputValues() {
+            localStorage.setItem('username', usernameInput.value);
+            localStorage.setItem('password', passwordInput.value);
+        }
+
+        function loadInputValues() {
+            const savedUsername = localStorage.getItem('username');
+            const savedPassword = localStorage.getItem('password');
+            if (savedUsername) {
+                usernameInput.value = savedUsername;
+            }
+            if (savedPassword) {
+                passwordInput.value = savedPassword;
+            }
+        }
+    });
+    </script>
+</html>
+

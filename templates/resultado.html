@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Over</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fontes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/status_jogo.css') }}">
+</head>
+<body class="container">
+    <section class="centralizar">
+        <img src="../static/imagens/game-over.png" />
+        <h1 class="parabens">Game Over!</h1>
+        <p class="mensagem-venceu">Não foi dessa vez!</p>
+        <a href="{{ url_for('reiniciar_jogo') }}" class="reiniciar-botao">Reiniciar</a>
+    </section>
+</body>
+</html>
