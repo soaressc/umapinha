@@ -114,8 +114,104 @@ LEFT JOIN
 GROUP BY 
     u.id_usuario, j.id_jogo;
 
-
-
 SELECT * FROM Status_Jogo WHERE id_usuario = 1 AND status_jogo = 'Concluído';
 
 
+# Função de validação para email
+DELIMITER //
+CREATE FUNCTION EmailJaExiste(email_usuario VARCHAR(245))
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+    DECLARE resultado BOOLEAN;
+    SELECT COUNT(*) INTO resultado
+    FROM Usuario
+    WHERE email = email_usuario;
+    RETURN resultado > 0;
+END //
+DELIMITER ;
+
+# Transação para mudança de senha
+DELIMITER //
+CREATE PROCEDURE change_password(
+    IN user_email_update VARCHAR(254), 
+    IN user_password_old VARCHAR(45), 
+    IN new_password VARCHAR(45), 
+    IN confirm_new_password VARCHAR(45)
+)  
+BEGIN
+    DECLARE old_password VARCHAR(45);
+
+    -- Inicia a transação
+    START TRANSACTION;
+
+    -- 1. Obter a senha antiga do usuário
+    SELECT senha INTO old_password
+    FROM Usuario 
+    WHERE email = user_email_update;
+
+    -- 2. Verificar se a senha antiga confere
+    IF old_password = user_password_old THEN
+        
+        -- 3. Verificar se a nova senha e a confirmação coincidem
+        IF new_password = confirm_new_password THEN
+            -- 4. Atualizar a senha
+            UPDATE Usuario
+            SET senha = new_password
+            WHERE email = user_email_update;
+
+            -- 5. Confirmar a transação
+            COMMIT;
+            SELECT 'Senha atualizada com sucesso!' AS status;
+        ELSE
+            -- Reverter a transação se as senhas não coincidirem
+            ROLLBACK;
+            SELECT 'Confirmação de senha não coincide com nova senha.' AS status;
+        END IF;
+    ELSE
+        -- Reverter a transação se a senha antiga não confere
+        ROLLBACK;
+        SELECT 'Senha antiga não confere.' AS status;
+    END IF;
+END //
+DELIMITER ;
+
+SELECT * FROM Usuario;
+
+# Atualizar a senha para 'novaSenha123' se a senha antiga for '123456' e se a confirmação da nova senha coincidir.
+CALL change_password('teste@teste.com', '123456', 'novaSenha123', 'novaSenha123');
+
+# Trigger log de cadastro (insert) ou update de usuário
+# Criação de tabela para armazenamento do log
+CREATE TABLE log_usuario (
+    id_log INT NOT NULL AUTO_INCREMENT,
+    id_usuario INT,
+    acao VARCHAR(50),
+    data_alteracao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_log),
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
+);
+
+# Trigger insert
+DELIMITER //
+CREATE TRIGGER insert_usuario
+AFTER INSERT ON Usuario
+FOR EACH ROW
+BEGIN
+    INSERT INTO log_usuario (id_usuario, acao)
+    VALUES (NEW.id_usuario, 'Inserção');
+END;
+//
+DELIMITER ;
+
+# Trigger update
+DELIMITER //
+CREATE TRIGGER update_usuario
+AFTER UPDATE ON Usuario
+FOR EACH ROW
+BEGIN
+    INSERT INTO log_usuario (id_usuario, acao)
+    VALUES (NEW.id_usuario, 'Atualização');
+END;
+//
+DELIMITER ;
