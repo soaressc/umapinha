@@ -2,19 +2,23 @@ from flask import jsonify, render_template, redirect, url_for, request, session,
 from app import app, db
 from models import Status_Jogo, Usuario, Jogo, Questao, Alternativa, Alternativa_Correta, Andar
 
+# Rota para a página inicial
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# Rota para o mapa inicial
 @app.route('/mapaGeral')
 def mapaGeral():
     return render_template('mapaGeral.html')
 
+# Rota que gerencia o andar por id
 @app.route('/andar/<int:numero>')
 def andar(numero):
     andar = Andar.query.get_or_404(numero)
     return render_template('andar.html', andar=andar)
 
+# Rotas para renderizar os andares, utilizadas para testes
 @app.route('/andar1')
 def andar1():
     return render_template('andar1.html')
@@ -36,10 +40,12 @@ def andar4():
 def andar5():
     return render_template('andar5.html')
 
+# Rota para a pergunta do andar 4
 @app.route('/perguntaAndar4Final')
 def perguntaAndar4Final():
     return render_template('perguntaAndar4Final.html')
 
+# Rota para verificar a resposta do usuário
 @app.route('/check_answer', methods=['POST'])
 def check_answer():
     try:
@@ -108,7 +114,8 @@ def check_answer():
 
     except Exception as e:
         return jsonify({'resultado': 'Ocorreu um erro no servidor.'}), 500
-
+    
+# Rota para reiniciar o jogo
 @app.route('/reiniciar_jogo')
 def reiniciar_jogo():
     id_usuario = session.get('id_usuario')
@@ -148,6 +155,7 @@ def exibir_questao(id_questao):
 
     return render_template('questao.html', questao=questao, alternativas=alternativas, texto_alternativa=questao.alternativa_correta.texto_alternativa)
 
+# Rota que direciona o usuário para a próxima questão
 @app.route('/proxima_questao')
 def proxima_questao():
     jogo = Jogo.query.get(session['id_jogo'])
@@ -156,6 +164,7 @@ def proxima_questao():
         return redirect(url_for('fim_jogo'))
     return redirect(url_for('questao', id_questao=questao.id_questao))
 
+# Rota que verifica se o usuário ainda está jogando, ganhou o jogo ou perdeu, utilizando a View criada no banco de dados
 @app.route('/status_jogo/<int:id_usuario>')
 def status_jogo(id_usuario):
     # Consulta a view Status_Jogo para o usuário específico

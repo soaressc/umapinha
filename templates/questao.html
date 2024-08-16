@@ -22,7 +22,8 @@
                 {% endfor %}
             </section>
             <section class="icon-user-container-questoes">
-                <img class="icon-user" src="{{ url_for('static', filename='imagens/iconUser.png') }}" onclick="toggleMenu()" />
+                <img class="icon-user" src="{{ url_for('static', filename='imagens/iconUser.png') }}"
+                    onclick="toggleMenu()" />
                 <div class="menu-perfil" id="menu-perfil">
                     <div class="close-align">
                         <span class="close-menu" onclick="toggleMenu()">X</span>
@@ -51,7 +52,7 @@
             menu.classList.toggle('show');
         }
 
-        // Fecha o menu
+        // Código que fecha o menu quando o usuário seleciona o X
         window.onclick = function (event) {
             if (!event.target.matches('.icon-user')) {
                 const menu = document.getElementById('menu-perfil');
@@ -71,7 +72,7 @@
             const botaoSelecionado = document.querySelector(`button[onclick="selecionarOpcao('${opcao}')"]`);
             enviarResposta(botaoSelecionado);
         }
-
+        // Função assíncrona que envia a resposta do usuário para a rota check_answer que valida se o usuário acertou ou errou a questão
         async function enviarResposta(botaoSelecionado) {
             const resultado = document.getElementById('resultado');
 
@@ -81,7 +82,7 @@
                     texto_resposta_correta: textoRespostaCorreta
                 };
 
-                console.log("Dados sendo enviados:", respostaDados);  // Verifique os dados
+                console.log("Dados sendo enviados:", respostaDados);  // Verificando os dados
 
                 const resposta = await fetch('/check_answer', {
                     method: 'POST',
@@ -98,19 +99,19 @@
 
                 resultado.textContent = dados.resultado;
 
-                // Adiciona a classe de resposta correta ou incorreta
+                // Verificando se a resposta está correta ou não e adicionando a classe correspondente
                 if (opcaoSelecionada === textoRespostaCorreta) {
                     botaoSelecionado.classList.add('opcao-correta');
                 } else {
                     botaoSelecionado.classList.add('opcao-incorreta');
                 }
-
+                // Redirecionando o usuário para a rota de status_jogo, caso ele tenha ganhado o jogo ou perdido
                 if (dados.redirecionar) {
                     window.location.href = '/status_jogo/' + '{{ questao.id_usuario }}';
                 } else if (dados.jogo_acabado) {
                     window.location.href = '/fim_jogo';
                 }
-
+                // Lidando com possíveis erros
             } catch (error) {
                 console.error('Erro ao enviar resposta:', error);
                 resultado.textContent = 'Ocorreu um erro. Tente novamente.';

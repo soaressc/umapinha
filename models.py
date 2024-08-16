@@ -1,5 +1,6 @@
 from app import db
 
+# Classe que armazena as informações do usuário
 class Usuario(db.Model):
     __tablename__ = 'Usuario'
     id_usuario = db.Column(db.Integer, primary_key=True)
@@ -7,6 +8,7 @@ class Usuario(db.Model):
     email = db.Column(db.String(245), nullable=False)
     senha = db.Column(db.String(40), nullable=False)
 
+# Classe referente ao Andar
 class Andar(db.Model):
     __tablename__ = 'Andar'
     numero = db.Column(db.Integer, primary_key=True)
@@ -14,7 +16,7 @@ class Andar(db.Model):
     id_usuario = db.Column(db.Integer, db.ForeignKey('Usuario.id_usuario'))  # Substitui 'nome'
     usuario = db.relationship('Usuario', backref=db.backref('andares', lazy=True))
 
-
+# Classe referente ao jogo
 class Jogo(db.Model):
     __tablename__ = 'Jogo'
     id_jogo = db.Column(db.Integer, primary_key=True)
@@ -24,7 +26,7 @@ class Jogo(db.Model):
     
     # Relacionamento inverso para acessar as questões relacionadas ao jogo
     questoes = db.relationship('Questao', backref='jogo', lazy=True)
-
+# Classe referente a questão
 class Questao(db.Model):
     __tablename__ = 'Questao'
     id_questao = db.Column(db.Integer, primary_key=True)
@@ -37,17 +39,20 @@ class Questao(db.Model):
 
     alternativa_correta = db.relationship('Alternativa_Correta', backref='questao')
 
+# Classe referente as alternativas corretas
 class Alternativa_Correta(db.Model):
     __tablename__ = 'Alternativa_Correta'
     id_alternativa_correta = db.Column(db.Integer, primary_key=True)
     texto_alternativa = db.Column(db.Text, nullable=False)
 
+# Classe referente as alternativas
 class Alternativa(db.Model):
     __tablename__ = 'Alternativa'
     id_alternativa = db.Column(db.Integer, primary_key=True)
     texto_alternativa = db.Column(db.Text)
     id_questao = db.Column(db.Integer, db.ForeignKey('Questao.id_questao'))
 
+# Classe referente a View criada no banco de dados que gerencia o status do jogo
 class Status_Jogo(db.Model):
     __tablename__ = 'Status_Jogo'
     id_usuario = db.Column(db.Integer, primary_key=True)
